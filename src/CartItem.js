@@ -27,12 +27,12 @@ const styles = {
     image: {
         height: 110,
         width: 110,
-        borderRadius: 4,
+        borderRadius: 20,
         background: '#ccc'
     },
     border: {
-        border: '1px solid #ccc',
-        borderRadius: 10
+        border: '2px solid #979797',
+        borderRadius: 20
     }
 }
 
