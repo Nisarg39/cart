@@ -3,7 +3,7 @@ import React from 'react';
 import Cart from './Cart';
 import Navbar from './Navbar';
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
+import { getFirestore, collection, getDocs, setDoc, doc,updateDoc, onSnapshot } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: "AIzaSyB9fwC_4oDoJTiBIjDRITo7EpdC0S0LRSw",
@@ -14,7 +14,7 @@ const firebaseConfig = {
   appId: "1:683752978916:web:f71965a26e77b7caa1eff1"
 };
 
-const app=initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 class App extends React.Component {
@@ -26,33 +26,38 @@ class App extends React.Component {
     }
   }
 
-  async componentDidMount(){
-    const querySnapshot = await getDocs(collection(db, "products"));
-    querySnapshot.forEach((doc) => {
-      console.log(doc.data());
-    });
-
-    const products = querySnapshot.docs.map((doc) => {
-      const data= doc.data();
-      data['id']= doc.id;
-
-      return data;
+  async componentDidMount() {
+    const collect = collection(db, "products");
+    onSnapshot(collect, (querySnapshot) => {
+      const products = querySnapshot.docs.map((doc) => {
+          const data= doc.data();
+          data['id']= doc.id;
+    
+          return data;
+        })
+    
+        this.setState({
+          products: products,
+          loading: false
+        })
     })
 
-    this.setState({
-      products: products,
-      loading: false
-    })
   }
 
-  handleIncreaseQuantity = (product) => {
+  handleIncreaseQuantity = async (product) => {
     const { products } = this.state;
     const index = products.indexOf(product);
-    products[index].qty += 1;
+    // products[index].qty += 1;
 
-    this.setState({
-      products: products
-    })
+    // this.setState({
+    //   products: products
+    // }) 
+
+    //updating in firebase
+    const productRef = doc(db, "products", products[index].id);
+    await updateDoc(productRef, {
+      qty: products[index].qty +1
+    });
   }
 
   handleDecreaseQuantity = (product) => {
@@ -77,7 +82,7 @@ class App extends React.Component {
   }
 
   getCartCount = () => {
-    const {products} = this.state;
+    const { products } = this.state;
     let count = 0;
     products.forEach((product) => {
       count += product.qty;
@@ -86,7 +91,7 @@ class App extends React.Component {
   }
 
   getCartTotal = () => {
-    const {products} = this.state;
+    const { products } = this.state;
     let total = 0
     products.map((product) => {
       total = total + product.qty * product.price;
@@ -94,21 +99,31 @@ class App extends React.Component {
     return total;
   }
 
+  async addProduct() {
+    await setDoc(doc(db, "products", "PD"), {
+      img: 'https://t4.ftcdn.net/jpg/02/22/70/75/240_F_222707513_kLhrXd6EPmU2efoxNRUGhmLhRaoJDd6n.jpg',
+      title: "Pendrive",
+      qty: 1,
+      price: 500
+    });
+  }
+  
   render() {
-    const {products, loading} = this.state;
+    const { products, loading } = this.state;
 
     return (
       <div className="App">
-        <Navbar count={this.getCartCount()}/>
+        <Navbar count={this.getCartCount()} />
         <h1>Cart</h1>
+        {/* <button onClick={this.addProduct}>ADD</button> */}
         <Cart
-          products = {products}
-          handleIncreaseQuantity = {this.handleIncreaseQuantity}
-          handleDecreaseQuantity = {this.handleDecreaseQuantity}
-          handleDeleteProduct = {this.handleDeleteProduct}
+          products={products}
+          handleIncreaseQuantity={this.handleIncreaseQuantity}
+          handleDecreaseQuantity={this.handleDecreaseQuantity}
+          handleDeleteProduct={this.handleDeleteProduct}
         />
         {loading && <h1>Loading Products...</h1>}
-        <div style={{padding: 10, fontSize: 20}}>
+        <div style={{ padding: 10, fontSize: 20 }}>
           TOTAL : RS - {this.getCartTotal()}
         </div>
       </div>

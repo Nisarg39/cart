@@ -28,7 +28,7 @@ const styles = {
         height: 110,
         width: 110,
         borderRadius: 20,
-        background: '#ccc'
+    
     },
     border: {
         border: '2px solid #979797',
