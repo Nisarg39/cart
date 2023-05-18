@@ -3,7 +3,7 @@ import React from 'react';
 import Cart from './Cart';
 import Navbar from './Navbar';
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDocs, setDoc, doc,updateDoc, onSnapshot } from 'firebase/firestore';
+import { getFirestore, collection, setDoc, doc, updateDoc, onSnapshot, deleteDoc } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: "AIzaSyB9fwC_4oDoJTiBIjDRITo7EpdC0S0LRSw",
@@ -30,16 +30,16 @@ class App extends React.Component {
     const collect = collection(db, "products");
     onSnapshot(collect, (querySnapshot) => {
       const products = querySnapshot.docs.map((doc) => {
-          const data= doc.data();
-          data['id']= doc.id;
-    
-          return data;
-        })
-    
-        this.setState({
-          products: products,
-          loading: false
-        })
+        const data = doc.data();
+        data['id'] = doc.id;
+
+        return data;
+      })
+
+      this.setState({
+        products: products,
+        loading: false
+      })
     })
 
   }
@@ -47,38 +47,30 @@ class App extends React.Component {
   handleIncreaseQuantity = async (product) => {
     const { products } = this.state;
     const index = products.indexOf(product);
-    // products[index].qty += 1;
-
-    // this.setState({
-    //   products: products
-    // }) 
 
     //updating in firebase
     const productRef = doc(db, "products", products[index].id);
     await updateDoc(productRef, {
-      qty: products[index].qty +1
+      qty: products[index].qty + 1
     });
   }
 
-  handleDecreaseQuantity = (product) => {
+  handleDecreaseQuantity = async (product) => {
     const { products } = this.state;
     const index = products.indexOf(product);
     if (products[index].qty !== 0) {
-      products[index].qty -= 1;
-
-      this.setState({
-        products: products
-      })
+      const productRef = doc(db, "products", products[index].id);
+      await updateDoc(productRef, {
+        qty: products[index].qty - 1
+      });
     }
   }
 
-  handleDeleteProduct = (id) => {
+  handleDeleteProduct = async (id) => {
     const { products } = this.state;
-    const items = products.filter((item) => item.id !== id);
 
-    this.setState({
-      products: items
-    })
+    await deleteDoc(doc(db, "products", id));
+    
   }
 
   getCartCount = () => {
@@ -101,13 +93,13 @@ class App extends React.Component {
 
   async addProduct() {
     await setDoc(doc(db, "products", "PD"), {
-      img: 'https://t4.ftcdn.net/jpg/02/22/70/75/240_F_222707513_kLhrXd6EPmU2efoxNRUGhmLhRaoJDd6n.jpg',
+      img: 'https://cdn-icons-png.flaticon.com/256/6119/6119847.png',
       title: "Pendrive",
       qty: 1,
       price: 500
     });
   }
-  
+
   render() {
     const { products, loading } = this.state;
 
@@ -115,7 +107,7 @@ class App extends React.Component {
       <div className="App">
         <Navbar count={this.getCartCount()} />
         <h1>Cart</h1>
-        {/* <button onClick={this.addProduct}>ADD</button> */}
+        <button onClick={this.addProduct}>ADD</button>
         <Cart
           products={products}
           handleIncreaseQuantity={this.handleIncreaseQuantity}
