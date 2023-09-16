@@ -9,14 +9,14 @@ const CartItem = (props) => {
                 <img style={styles.image} src={product.img} />
             </div>
             <div className='right-block'>
-                <div style={{ fontSize: 25 }}>{title}</div>
+                <div style={{ fontSize: 25, color: "#eee"}}>{title}</div>
                 <div style={{ color: '#777' }}>Rs {price}</div>
                 <div style={{ color: '#777' }}>Qty: {qty}</div>
                 <div className='card-item-actions'>
                     {/* Buttons */}
-                    <img alt="increase" onClick={() => handleIncreaseQuantity(product)} className='action-icons' src='https://cdn-icons-png.flaticon.com/128/1828/1828919.png' />
-                    <img alt="decrease" onClick={() => handleDecreaseQuantity(product)} className='action-icons' src='https://cdn-icons-png.flaticon.com/128/1828/1828899.png' />
-                    <img alt="delete" onClick={() => handleDeleteProduct(product.id)} className='action-icons' src='https://cdn-icons-png.flaticon.com/128/484/484611.png' />
+                    <img alt="increase" onClick={() => handleIncreaseQuantity(product)} className='action-icons' src='https://cdn-icons-png.flaticon.com/128/1828/1828817.png' />
+                    <img alt="decrease" onClick={() => handleDecreaseQuantity(product)} className='action-icons' src='https://cdn-icons-png.flaticon.com/128/11519/11519974.png' />
+                    <img alt="delete" onClick={() => handleDeleteProduct(product.id)} className='action-icons' src='https://cdn-icons-png.flaticon.com/128/9790/9790368.png' />
                 </div>
             </div>
         </div>

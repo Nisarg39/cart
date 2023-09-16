@@ -104,10 +104,9 @@ class App extends React.Component {
     const { products, loading } = this.state;
 
     return (
-      <div className="App">
+      <div className="App" style={{backgroundColor : "black"}}>
         <Navbar count={this.getCartCount()} />
-        <h1>Cart</h1>
-        <button onClick={this.addProduct}>ADD</button>
+        {/* <button onClick={this.addProduct}>ADD</button> */}
         <Cart
           products={products}
           handleIncreaseQuantity={this.handleIncreaseQuantity}
@@ -115,7 +114,7 @@ class App extends React.Component {
           handleDeleteProduct={this.handleDeleteProduct}
         />
         {loading && <h1>Loading Products...</h1>}
-        <div style={{ padding: 10, fontSize: 20 }}>
+        <div style={{ padding: 10, fontSize: 20, color: "#eee" }}>
           TOTAL : RS - {this.getCartTotal()}
         </div>
       </div>

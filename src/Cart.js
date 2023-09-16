@@ -4,7 +4,7 @@ import CartItem from "./CartItem";
 const Cart = (props) => {
     const { products } = props;
     return (
-        <div className="cart">
+        <div className="cart" style={{minHeight: "100vh"}}>
             {products.map((product) => {
                 return (
                     <CartItem
