@@ -3,6 +3,7 @@
 
 Shopping Cart UI with realtime update from firebase and created quick response by using React Hooks
 
+Deployed - https://nisarg39.github.io/cart/
 
 ## Run Locally
 
